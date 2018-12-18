@@ -2,7 +2,7 @@ module example
     use, intrinsic :: iso_c_binding, only: c_double, c_int, c_ptr, c_loc, c_f_pointer
     implicit none
     private
-    public dp, make_udf, use_udf, UserDefined
+    public dp, make_udf, use_udf, makeDerivedType, examineDerivedType, printArray, UserDefined
 
     integer, parameter :: dp = kind(0.d0)
 
@@ -58,5 +58,12 @@ contains
         call c_f_pointer(this, that)
         someInt = that%someInteger
     end subroutine examineDerivedType
+
+    subroutine printArray(n, array) bind(c, name='printArray')
+        integer(c_int), intent(in) :: n
+        real(c_double), intent(in) :: array(n)
+        integer :: i
+        print '("["100(F5.3,1X)"]")', (array(i), i=1, n)
+    end subroutine printArray
 
 end module example

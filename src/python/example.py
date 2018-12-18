@@ -8,7 +8,7 @@ from multiprocessing import Pool
 
 # Get the location of the shared library file.
 here = os.path.dirname(__file__)
-lib_file = os.path.abspath(os.path.join(here, '..', '..', 'lib', 'libexample.so'))
+lib_file = os.path.abspath(os.path.join(here, '..', '..', 'lib', 'example.so'))
 
 
 class UserDefined(ctypes.Structure):
@@ -116,6 +116,14 @@ def main():
     # calls are independent of each other, then the integers should remain unchanged.
     pool = Pool(processes=4)
     pool.map(do_the_pointer_thing, range(4))
+
+    # Pass a numpy array to a Fortran function
+    doubleptr = ctypes.POINTER(ctypes.c_double)
+    n = ctypes.c_int(10)
+    arr = np.array(np.random.rand(n.value), dtype=ctypes.c_double)
+    np.set_printoptions(3)
+    print('{}'.format(arr))
+    lib_example.printArray(ctypes.byref(n), arr.ctypes.data_as(doubleptr))
 
 
 if __name__ == '__main__':
