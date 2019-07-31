@@ -17,6 +17,11 @@ module example
         integer :: someInteger
     end type SomeDerivedType
 
+    type :: VariableLengthArrayType
+        integer(c_int) :: size
+        type(c_ptr) :: data
+    end type VariableLengthArrayType
+
 contains
 
     subroutine make_udf(buzz, broken, how_many, udf) bind(c, name='make_udf')
@@ -80,5 +85,25 @@ contains
             end if
         end do
     end subroutine print2DArray
+
+    subroutine putArrayInUDT(n, array) bind(c, name='putArrayInUDT')
+        integer(c_int), intent(in) :: n
+        real(c_double), pointer, intent(in) :: array(:)
+        type(VariableLengthArrayType) :: container
+
+        container%size = n
+        container%data = c_loc(array)
+
+        call printArrayInUDT(container)
+    end subroutine putArrayInUDT
+
+    subroutine printArrayInUDT(container)
+        type(VariableLengthArrayType) :: container
+        real(c_double), pointer :: array(:)
+
+        call c_f_pointer(container%data, array, [container%size])
+
+        call printArray(container%size, array)
+    end subroutine printArrayInUDT
 
 end module example

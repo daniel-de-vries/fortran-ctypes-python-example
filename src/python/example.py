@@ -122,16 +122,21 @@ def main():
     n = ctypes.c_int(10)
     arr = np.array(np.random.rand(n.value), dtype=ctypes.c_double)
     np.set_printoptions(3)
-    print('{}'.format(arr))
+    print(f'{arr}')
     lib_example.printArray(ctypes.byref(n), arr.ctypes.data_as(doubleptr))
 
     # Pass a 2D numpy array to a Fortran function
     m = ctypes.c_int(3)
     n = ctypes.c_int(4)
     arr = np.array(np.random.rand(m.value, n.value), dtype=ctypes.c_double)
-    np.set_printoptions(3)
-    print('{}'.format(arr))
+    print(f'{arr}')
     lib_example.print2DArray(ctypes.byref(m), ctypes.byref(n), arr.ctypes.data_as(doubleptr))
+
+    # Pass a numpy array to Fortran to be stored in a UDT
+    n = ctypes.c_int(5)
+    arr = np.array(np.random.rand(n.value), dtype=ctypes.c_double)
+    print(f'{arr}')
+    lib_example.putArrayInUDT(ctypes.byref(n), ctypes.byref(arr.ctypes.data_as(doubleptr)))
 
 
 if __name__ == '__main__':
