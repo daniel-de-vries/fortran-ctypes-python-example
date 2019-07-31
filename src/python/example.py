@@ -117,13 +117,21 @@ def main():
     pool = Pool(processes=4)
     pool.map(do_the_pointer_thing, range(4))
 
-    # Pass a numpy array to a Fortran function
+    # Pass a 1D numpy array to a Fortran function
     doubleptr = ctypes.POINTER(ctypes.c_double)
     n = ctypes.c_int(10)
     arr = np.array(np.random.rand(n.value), dtype=ctypes.c_double)
     np.set_printoptions(3)
     print('{}'.format(arr))
     lib_example.printArray(ctypes.byref(n), arr.ctypes.data_as(doubleptr))
+
+    # Pass a 2D numpy array to a Fortran function
+    m = ctypes.c_int(3)
+    n = ctypes.c_int(4)
+    arr = np.array(np.random.rand(m.value, n.value), dtype=ctypes.c_double)
+    np.set_printoptions(3)
+    print('{}'.format(arr))
+    lib_example.print2DArray(ctypes.byref(m), ctypes.byref(n), arr.ctypes.data_as(doubleptr))
 
 
 if __name__ == '__main__':

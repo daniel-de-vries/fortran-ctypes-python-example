@@ -66,4 +66,19 @@ contains
         print '("["100(F5.3,1X)"]")', (array(i), i=1, n)
     end subroutine printArray
 
+    subroutine print2DArray(m, n, array) bind(c, name='print2DArray')
+        integer(c_int), intent(in) :: m, n
+        real(c_double), intent(in) :: array(m, n)
+        integer :: i, j
+        do i = 1, m
+            if (i == 1) then
+                print '("[["100(F5.3,1X)"]")', (array(i, j), j=1, n)
+            elseif (i < m) then
+                print '(" ["100(F5.3,1X)"]")', (array(i, j), j=1, n)
+            else
+                print '(" ["100(F5.3,1X)"]]")', (array(i, j), j=1, n)
+            end if
+        end do
+    end subroutine print2DArray
+
 end module example
